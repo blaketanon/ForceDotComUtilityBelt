@@ -1,4 +1,4 @@
-global class Admin_sObjectFieldUpdaterBatch_schedule implements Schedulable {
+global class util_sObjectFieldUpdaterBatch_schedule implements Schedulable {
 
 	global string query;
 	global string nextBatch;
@@ -7,7 +7,7 @@ global class Admin_sObjectFieldUpdaterBatch_schedule implements Schedulable {
 	global object changeTo;
 	global integer batSize;
 
-	global Admin_sObjectFieldUpdaterBatch_schedule(String qry, string nextBat, string obj, string fld, object changeObj, integer size) {
+	global util_sObjectFieldUpdaterBatch_schedule(String qry, string nextBat, string obj, string fld, object changeObj, integer size) {
         query = qry;
         nextBatch = nextBat;
         sObj = obj;
@@ -18,7 +18,7 @@ global class Admin_sObjectFieldUpdaterBatch_schedule implements Schedulable {
 
     global void execute(SchedulableContext scMain) {
         
-        Admin_sObjectFieldUpdaterBatch clsBatch = new Admin_sObjectFieldUpdaterBatch(query,nextBatch,sObj,field,changeTo);
+        util_sObjectFieldUpdaterBatch clsBatch = new util_sObjectFieldUpdaterBatch(query,nextBatch,sObj,field,changeTo);
         ID idBatch = Database.executeBatch(clsBatch, batSize);
         
     }
@@ -33,8 +33,8 @@ global class Admin_sObjectFieldUpdaterBatch_schedule implements Schedulable {
     object changeTo = ;
     integer batSize = ;
     
-    Admin_sObjectFieldUpdaterBatch_schedule clsCRON = new Admin_sObjectFieldUpdaterBatch_schedule(query,nextBatch,sObj,field,changeTo,batSize);
-    System.Schedule('Admin_sObjectFieldUpdaterBatch_schedule @ [time?]', '0 0 0 * * ?', clsCRON);
+    util_sObjectFieldUpdaterBatch_schedule clsCRON = new util_sObjectFieldUpdaterBatch_schedule(query,nextBatch,sObj,field,changeTo,batSize);
+    System.Schedule('util_sObjectFieldUpdaterBatch_schedule @ [time?]', '0 0 0 * * ?', clsCRON);
     http://www.salesforce.com/us/developer/docs/apexcode/Content/apex_methods_system_system.htm
     
     **/
