@@ -1,18 +1,18 @@
-global class Admin_sObjectDeleterBatch implements Database.Batchable<sobject>, Database.Stateful{
+global class util_sObjectDeleterBatch implements Database.Batchable<sobject>, Database.Stateful{
 
     /**
     Run This Batch
 
     string query = '';
     
-    ID idBatch = Database.executeBatch(new Admin_sObjectDeleterBatch(query), 200);
+    ID idBatch = Database.executeBatch(new util_sObjectDeleterBatch(query), 200);
      **/
 
     global string query;
     
     
     // Class Constructor - set query string
-    global Admin_sObjectDeleterBatch(String q) {
+    global util_sObjectDeleterBatch(String q) {
         query = q;
     }
     
@@ -23,11 +23,9 @@ global class Admin_sObjectDeleterBatch implements Database.Batchable<sobject>, D
     
     // "Execute" is what is being run as a separate process per batch
     global void execute(Database.BatchableContext bcMain, List<sObject> scope) {
-
-        List<sObject> scopeToUpdate = scope;
-
-        if(scopeToUpdate.size() > 0) { 
-            delete scopeToUpdate; 
+        
+        if(scope.size() > 0) { 
+            delete scope; 
         }
 
     }
