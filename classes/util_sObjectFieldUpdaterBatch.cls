@@ -1,4 +1,4 @@
-global class Admin_sObjectFieldUpdaterBatch implements Database.Batchable<sobject>, Database.Stateful {
+global class util_sObjectFieldUpdaterBatch implements Database.Batchable<sobject>, Database.Stateful {
 
     /**
     Run This Batch
@@ -10,7 +10,7 @@ global class Admin_sObjectFieldUpdaterBatch implements Database.Batchable<sobjec
     object changeTo = ;
     integer batSize = ;
     
-    ID idBatch = Database.executeBatch(new Admin_sObjectFieldUpdaterBatch(query,nextBatch,sObj,field,changeTo), batSize);
+    ID idBatch = Database.executeBatch(new util_sObjectFieldUpdaterBatch(query,nextBatch,sObj,field,changeTo), batSize);
     **/
 
     global string query;
@@ -27,7 +27,7 @@ global class Admin_sObjectFieldUpdaterBatch implements Database.Batchable<sobjec
 
     global integer NumBatches;
     
-    global Admin_sObjectFieldUpdaterBatch(String qry, string nextBat, string obj, string field, object changeObj) {
+    global util_sObjectFieldUpdaterBatch(String qry, string nextBat, string obj, string field, object changeObj) {
 
         Query = qry;
         
@@ -62,14 +62,13 @@ global class Admin_sObjectFieldUpdaterBatch implements Database.Batchable<sobjec
     }
     
     global void execute(Database.BatchableContext bcMain, List<sObject> scope) {
-        List<sObject> scopeToUpdate = scope;
 
-        for(sObject s : scopeToUpdate){
-        		s.put(sObjField, changeTo);
+        for(sObject s : scope){
+        	s.put(sObjField, changeTo);
         }
 
-        if(scopeToUpdate.size() > 0) { 
-            update scopeToUpdate; 
+        if(scope.size() > 0) { 
+            update scope; 
         }
     }
     
