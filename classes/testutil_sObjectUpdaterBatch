@@ -1,0 +1,56 @@
+@isTest
+private class testutil_sObjectUpdaterBatch{
+
+    static account acct;
+    static list<contact> contacts;
+
+    private static void init(){
+
+        acct = new account(
+            name = 'Test Account'
+        );
+
+        insert acct;
+
+        contacts = new list<contact>();
+
+        for(integer i = 0; i < 200; i++){
+            contacts.add(new contact(
+                firstName = 'Sample',
+                lastName = 'Contact - '+i,
+                accountId = acct.id
+            ));
+        }
+
+        insert contacts;
+
+    }
+
+    @isTest static void test_util_sObjectUpdaterBatch() { 
+        
+        init();
+
+        test.startTest();
+
+            string query = 'SELECT Id FROM Contact';
+        
+            id thisBatchId = Database.executeBatch(new util_sObjectUpdaterBatch(query,''), 200);
+
+        test.stopTest();
+
+        //make sure there are 200 contacts
+        system.assertEquals(200,contacts.size());
+
+        asyncApexJob thisJob = [SELECT id, status, jobItemsProcessed, numberOfErrors, totalJobItems FROM asyncApexJob WHERE id =: thisBatchId];
+
+        //make sure job was completed
+        system.assertEquals('Completed',thisJob.status);
+        //make sure 1 job was processed
+        system.assertEquals(1,thisJob.jobItemsProcessed);
+        //make sure there were 0 errors
+        system.assertEquals(0,thisJob.numberOfErrors);
+
+
+    }
+    
+}
