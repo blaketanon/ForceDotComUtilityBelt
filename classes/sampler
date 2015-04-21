@@ -1,106 +1,19 @@
-<apex:component controller="SparklineRemote">
+<apex:component >
 
-	<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
-    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"/> 
-    <apex:includeScript value="{!URLFOR($Resource.sparklines)}"/>
+	<apex:attribute name="query" type="string" description="Query for the sparkline" required="true"/>
+	<apex:attribute name="spanId" type="string" description="ID for the sparkline" required="true"/>
 
-    <style type="text/css">
 
-    	.sparklineAlert{
-    		background-color: #f2dede;
-			border-color: #ebccd1;
-			color: #a94442;
-			padding: 15px;
-			margin-bottom: 20px;
-			border: 1px solid transparent;
-			border-radius: 4px;
-			box-sizing: border-box;
-		}
 
-    </style>
+    <span id="{!spanId}">
 
-    <div id="sparklingAlerts" class="sparklineAlert"></div>
+    	<script>
 
-    <script>
+    		getData('{!query}','{!spanId}','line');
+
+
+        </script>
+
+    </span>
     
-        var j$ = jQuery.noConflict();
-
-        Visualforce.remoting.timeout = 30000;
-
-        j$(document).ready(function(){
-
-            j$('#sparklingAlerts').hide();
-            //getAccts();
-
-            //j$('#listMe').empty().append('{!$Resource.myJson}');
-
-        });
-
-        function getData(qry,spanId,sparkType){
-        	j$("#"+spanId).empty().append("Loading...");
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.SparklineRemote.getData}', qry,
-                function(result, event){
-                    if(event.status){
-	                    console.log('# # # result: '+result.length);
-
-	                    j$("#"+spanId).empty();
-
-		                if(result.length > 0){
-		                	console.log('@ @ @ results: '+result);
-		                	
-		                	if(sparkType === 'line'){
-			                    j$("#"+spanId).sparkline(result, {
-			                        type: 'line',
-			                        normalRangeMin: 0,
-			                        drawNormalOnTop: false,
-			                        fillColor: '#c0d0f0',
-			                        lineColor: '#0000f0',
-			                        height: '24px',
-			                        width: '100px',
-			                        spotColor: '#f08000',
-			                        minSpotColor: '#f08000',
-			                        maxSpotColor: '#f08000',
-			                        highlightSpotColor: '#50f050',
-			                        highlightLineColor: '#f02020'
-			                    });
-			                }else if(sparkType === 'bar'){
-			                	j$("#"+spanId).sparkline(result, {
-			                        type: 'bar',
-			                        chartRangeMinX: 0,
-			                        normalRangeMin: 0,
-			                        barColor: '#3366cc',
-			                        height: '24px',
-			                        width: '100px'
-			                    });
-			                }
-
-	            		}else{
-	            			j$("#"+spanId).empty().append("<center>No Data</center>");
-	            		}
-	            	}else if(event.type === 'exception'){
-
-	            		if(event.message == 'Unable to connect to the server (transaction aborted: timeout).'){
-	            			j$("#"+spanId).empty().append("<center><a onclick=\"getData('"+obj+"','"+val+"','"+filter+"','"+grouping+"','"+ordering+"','"+spanId+"','"+sparkType+"');\" style=\"color:blue;\">Retry</a></center>");
-	            			console.log('# # # exception/timeout: '+event.message);
-	            			j$('#sparklingAlerts').show();
-	                		j$('#sparklingAlerts').empty().append('An error has occured generating the sparkline(s).  <b>'+event.message+'</b>');
-	            		}else{
-		            		console.log('# # # exception: '+event.message);
-	            			j$('#sparklingAlerts').show();
-	                		j$('#sparklingAlerts').empty().append('An error has occured generating the sparkline(s).  <b>'+event.message+'</b>');
-	                		j$("#"+spanId).empty().append('<center style="color:red;"><b>Error</b></center>');
-	                	}
-
-                	}else{
-	            		console.log('# # # other event error: '+event.message);
-                		j$('#sparklingAlerts').show();
-                		j$('#sparklingAlerts').empty().append('An error has occured generating the sparkline(s).  <b>'+event.message+'</b>');
-                		j$("#"+spanId).empty().append('<center style="color:red;"<b>>Error</b></center>');
-                	}
-                }, 
-                {
-                	escape: false
-                }
-            );
-        }
+</apex:component >
